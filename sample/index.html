@@ -1,25 +1,259 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skill-Based Job Finder</title>
   <style>
-    body { font-family: Arial; background: #f1f5f9; padding: 20px; }
-    input { padding: 10px; width: 260px; }
-    button { padding: 10px; }
-    .job { background: white; padding: 16px; margin: 12px 0; border-radius: 8px; }
-    .source { font-size: 12px; color: gray; }
-    .apply { background: #2563eb; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+
+    .search-card {
+      background: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      margin-bottom: 32px;
+    }
+
+    .search-container {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    #skill {
+      flex: 1;
+      min-width: 250px;
+      padding: 14px 20px;
+      font-size: 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    #skill:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    button {
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #jobs {
+      display: grid;
+      gap: 20px;
+    }
+
+    .job {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      border-left: 4px solid #667eea;
+    }
+
+    .job:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .job-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .job-company {
+      font-size: 1.1rem;
+      color: #667eea;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .job-description {
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .job-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .source {
+      font-size: 13px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .apply {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .apply:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: white;
+    }
+
+    .empty-state svg {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      opacity: 0.9;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: white;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 640px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .search-container {
+        flex-direction: column;
+      }
+
+      #skill {
+        min-width: 100%;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .job-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .apply {
+        width: 100%;
+        text-align: center;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="header">
+      <h1>🎯 Skill-Based Job Finder</h1>
+      <p>Discover opportunities that match your expertise</p>
+    </div>
 
-<h2>Skill-Based Job Finder</h2>
-<input id="skill" placeholder="Enter skill">
-<button onclick="searchJobs()">Search Jobs</button>
+    <div class="search-card">
+      <div class="search-container">
+        <input 
+          id="skill" 
+          type="text" 
+          placeholder="e.g., JavaScript, Python, Marketing..."
+          onkeypress="if(event.key==='Enter') searchJobs()"
+        >
+        <button onclick="searchJobs()">Search Jobs</button>
+      </div>
+    </div>
 
-<div id="jobs"></div>
+    <div id="jobs">
+      <div class="empty-state">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <h3>Start Your Search</h3>
+        <p>Enter a skill above to find relevant job opportunities</p>
+      </div>
+    </div>
+  </div>
 
-<script src="./main.js"></script>
-
+  <script src="./main.js"></script>
 </body>
 </html>
