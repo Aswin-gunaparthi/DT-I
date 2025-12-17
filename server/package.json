@@ -5,7 +5,7 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "start": "fuser -k 5000/tcp || true; node index.js"
+    "start": "kill-port 5000 && node index.js"
     },
     "dependencies": {
         "axios": "^1.6.0",
@@ -15,5 +15,8 @@
     },
     "keywords": [],
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "devDependencies": {
+        "kill-port": "^2.0.1"
+    }
 }
